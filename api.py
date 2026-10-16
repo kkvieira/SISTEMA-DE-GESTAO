@@ -161,9 +161,11 @@ def criar():
             (limpo["cliente_nome"], limpo["cpf"], limpo["cnpj"], limpo["plano"], limpo["login_cliente"], senha_enc,
              limpo["protocolo"], limpo["tipo"], limpo["status"], limpo["prazo_resolucao"], agora, agora,
              concluido_em, g.user["id"]))
-    except sqlite3.IntegrityError:
-        raise ApiError("Já existe um processo com este número de protocolo.", 422,
-                       {"protocolo": "Protocolo duplicado."})
+    except Exception as exc:
+        if "UNIQUE" in str(exc).upper() or "DUPLICATE" in str(exc).upper() or "INTEGRITY" in str(exc).upper():
+            raise ApiError("Já existe um processo com este número de protocolo.", 422,
+                           {"protocolo": "Protocolo duplicado."})
+        raise
     pid = cur.lastrowid
     services.registrar_historico(db, pid, _usuario(), "Processo cadastrado.", agora)
     services.auditar(db, _usuario(), "criar", pid, limpo["protocolo"])
@@ -222,8 +224,10 @@ def editar(pid):
         notas.append(texto)
     try:
         db.execute(f"UPDATE processos SET {', '.join(sets)} WHERE id = ?", params + [pid])
-    except sqlite3.IntegrityError:
-        raise ApiError("Protocolo duplicado.", 422, {"protocolo": "Protocolo duplicado."})
+    except Exception as exc:
+        if "UNIQUE" in str(exc).upper() or "DUPLICATE" in str(exc).upper() or "INTEGRITY" in str(exc).upper():
+            raise ApiError("Protocolo duplicado.", 422, {"protocolo": "Protocolo duplicado."})
+        raise
     services.registrar_historico(db, pid, _usuario(), " ".join(notas), agora)
     services.auditar(db, _usuario(), "editar", pid, limpo["protocolo"])
     db.commit()

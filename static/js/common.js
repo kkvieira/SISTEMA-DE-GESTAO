@@ -58,7 +58,7 @@
 
   function toast(msg, tipo = 'ok') {
     const el = h('div', { class: `toast toast-${tipo}`, role: tipo === 'erro' ? 'alert' : 'status' },
-      h('span', { text: tipo === 'erro' ? '⚠️' : tipo === 'info' ? 'ℹ️' : '✅' }), h('span', { text: msg }));
+      h('span', { text: tipo === 'erro' ? '' : tipo === 'info' ? 'ℹ' : '' }), h('span', { text: msg }));
     $('#toasts').append(el);
     setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 300); }, 4500);
   }
@@ -190,7 +190,7 @@
 
   function renderLista(el, procs, { mostrarTipo = true, arquivados = false, vazio = 'Nenhum processo encontrado.' } = {}) {
     if (!procs.length) {
-      el.replaceChildren(h('div', { class: 'empty' }, h('div', { class: 'empty-icon', text: '📭' }), h('p', { text: vazio })));
+      el.replaceChildren(h('div', { class: 'empty' }, h('div', { class: 'empty-icon', text: '' }), h('p', { text: vazio })));
       return;
     }
     const cols = ['Cliente', 'Plano', 'Protocolo', ...(mostrarTipo ? ['Tipo'] : []), 'Cadastro', arquivados ? 'Concluído em' : 'Status', ''];
@@ -231,21 +231,21 @@
 
   function renderDetalhe(p) {
     const arq = p.status === 'concluido';
-    $('#det-titulo').textContent = `📄 Protocolo ${p.protocolo}`;
+    $('#det-titulo').textContent = `Protocolo ${p.protocolo}`;
 
     // Senha: nunca vem na resposta; só é buscada sob demanda e por perfil autorizado.
     let senhaEl = h('span', { class: 'mono', text: p.tem_senha ? '••••••••' : '—' });
     let senhaBtn = null;
     if (p.tem_senha && p.pode_ver_senha) {
       let timer = null, visivel = false;
-      senhaBtn = h('button', { class: 'btn btn-ghost btn-sm', type: 'button', text: '👁️ Revelar' });
+      senhaBtn = h('button', { class: 'btn btn-ghost btn-sm', type: 'button', text: 'Revelar' });
       senhaBtn.addEventListener('click', async () => {
-        if (visivel) { senhaEl.textContent = '••••••••'; senhaBtn.textContent = '👁️ Revelar'; visivel = false; clearTimeout(timer); return; }
+        if (visivel) { senhaEl.textContent = '••••••••'; senhaBtn.textContent = 'Revelar'; visivel = false; clearTimeout(timer); return; }
         busy(senhaBtn, true);
         try {
           const r = await api(`/api/processos/${p.id}/senha`, { method: 'POST', body: {} });
-          senhaEl.textContent = r.senha; senhaBtn.textContent = '🙈 Ocultar'; visivel = true;
-          timer = setTimeout(() => { senhaEl.textContent = '••••••••'; senhaBtn.textContent = '👁️ Revelar'; visivel = false; }, 15000);
+          senhaEl.textContent = r.senha; senhaBtn.textContent = 'Ocultar'; visivel = true;
+          timer = setTimeout(() => { senhaEl.textContent = '••••••••'; senhaBtn.textContent = 'Revelar'; visivel = false; }, 15000);
         } catch (e) { toast(e.message, 'erro'); } finally { busy(senhaBtn, false); }
       });
     }
@@ -277,7 +277,7 @@
       });
 
       const txt = h('textarea', { id: 'det-nota', rows: '2', maxlength: '1000', placeholder: 'Ex.: Aguardando retorno da operadora…' });
-      const btnNota = h('button', { class: 'btn btn-ghost btn-sm', type: 'button', text: '📝 Registrar atualização' });
+      const btnNota = h('button', { class: 'btn btn-ghost btn-sm', type: 'button', text: 'Registrar atualização' });
       btnNota.addEventListener('click', async () => {
         if (!txt.value.trim()) { toast('Escreva a atualização antes de salvar.', 'erro'); txt.focus(); return; }
         busy(btnNota, true);
@@ -294,7 +294,7 @@
 
     const acoes = h('div', { class: 'dlg-actions' });
     if (arq) {
-      const reabrir = h('button', { class: 'btn btn-primary', type: 'button', text: '↩️ Reabrir processo' });
+      const reabrir = h('button', { class: 'btn btn-primary', type: 'button', text: 'Reabrir processo' });
       reabrir.addEventListener('click', async () => {
         busy(reabrir, true);
         try { const r = await api(`/api/processos/${p.id}/reabrir`, { method: 'POST', body: {} }); toast(r.mensagem); $('#dlg-detalhe').close(); mudou(); }
@@ -302,10 +302,10 @@
       });
       acoes.append(reabrir);
     } else {
-      acoes.append(h('button', { class: 'btn btn-ghost', type: 'button', text: '✏️ Editar', onclick: () => abrirEdicao(p) }));
+      acoes.append(h('button', { class: 'btn btn-ghost', type: 'button', text: 'Editar', onclick: () => abrirEdicao(p) }));
     }
     if (!arq || APP.admin) {
-      acoes.append(h('button', { class: 'btn btn-danger', type: 'button', text: arq ? '🗑️ Excluir definitivamente' : '🗑️ Excluir', onclick: () => excluir(p) }));
+      acoes.append(h('button', { class: 'btn btn-danger', type: 'button', text: arq ? 'Excluir definitivamente' : 'Excluir', onclick: () => excluir(p) }));
     }
     blocos.push(acoes);
 

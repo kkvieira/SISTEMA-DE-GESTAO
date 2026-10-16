@@ -41,6 +41,7 @@ class Config:
     # ATENÇÃO: se perder esta chave, as senhas guardadas não poderão ser recuperadas.
     FERNET_KEY = _segredo_persistente("FERNET_KEY", "fernet.key", lambda: Fernet.generate_key().decode())
 
+    DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()
     DATABASE = os.environ.get("DATABASE_PATH", str(INSTANCE_DIR / "gestao.db"))
 
     # Sessão

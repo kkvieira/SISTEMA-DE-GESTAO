@@ -45,7 +45,7 @@
     const corpo = $('#alertas-corpo');
     const partes = [];
     if (al.total === 0) {
-      partes.push(h('div', { class: 'allgood' }, '🎉 Tudo em dia! Nenhum processo precisa de atenção no momento.'));
+      partes.push(h('div', { class: 'allgood' }, 'Tudo em dia! Nenhum processo precisa de atenção no momento.'));
     } else {
       const resumo = al.total === 1 ? 'Você tem 1 processo que precisa de atenção.' : `Você tem ${al.total} processos que precisam de atenção.`;
       partes.push(h('div', { class: 'alert-summary' }, h('strong', { text: resumo }),
@@ -61,7 +61,7 @@
       }
     }
     if (al.sem_prazo > 0) {
-      partes.push(h('p', { class: 'info-gray' }, `ℹ️ ${al.sem_prazo} ${al.sem_prazo === 1 ? 'processo está' : 'processos estão'} sem prazo de resolução definido.`));
+      partes.push(h('p', { class: 'info-gray' }, `ℹ${al.sem_prazo} ${al.sem_prazo === 1 ? 'processo está' : 'processos estão'} sem prazo de resolução definido.`));
     }
     corpo.replaceChildren(...partes);
   }
@@ -75,8 +75,8 @@
     $('#lista-area').hidden = !lista;
     if (!lista) return;
     $('#lista-titulo').textContent = filtro.tipo
-      ? `📁 ${APP.tipos[filtro.tipo].label}`
-      : '🔍 Resultados da busca';
+      ? `${APP.tipos[filtro.tipo].label}`
+      : 'Resultados da busca';
     const alvo = $('#lista');
     carregando(alvo);
     const meu = ++reqId;
