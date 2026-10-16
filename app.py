@@ -30,12 +30,19 @@ def criar_usuario(conn, username: str, senha: str, role: str = "operador"):
 
 
 def _bootstrap_admin(app):
-    """Cria o primeiro administrador. Sem senha padrão: usa ADMIN_PASSWORD ou gera uma aleatória."""
+    """Cria ou atualiza a senha do primeiro administrador a partir de ADMIN_PASSWORD."""
     with app.app_context():
         conn = database.get_db()
-        if conn.execute("SELECT COUNT(*) FROM usuarios").fetchone()[0]:
+        senha = app.config.get("ADMIN_PASSWORD", "").strip()
+        user_row = conn.execute("SELECT id, username FROM usuarios WHERE role = 'admin' LIMIT 1").fetchone()
+        
+        if user_row:
+            if senha:
+                # Se o usuário configurou uma senha na Vercel/env, atualiza a senha do admin
+                conn.execute("UPDATE usuarios SET password_hash = ? WHERE id = ?", (generate_password_hash(senha), user_row["id"]))
+                conn.commit()
             return
-        senha = app.config["ADMIN_PASSWORD"]
+
         gerada = not senha
         if gerada:
             senha = secrets.token_urlsafe(12)
