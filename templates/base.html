@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <meta name="robots" content="noindex, nofollow">
+  <title>{% block title %}bora trabalhar!!{% endblock %} · Gestão de Tratativas</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body data-app='{{ {"tipos": TIPOS, "status": STATUS, "admin": usuario.role == "admin" if usuario else false} | tojson }}'>
+  {% if usuario %}
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('index') }}">🩺 <span>Gestão de Tratativas</span></a>
+    <nav class="topnav">
+      <a href="{{ url_for('index') }}">🏠 Início</a>
+      <a href="{{ url_for('concluidos') }}">✅ Concluídos</a>
+      <span class="user" title="Perfil: {{ usuario.role }}">👤 {{ usuario.username }}</span>
+      <form method="post" action="{{ url_for('logout') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-ghost btn-sm" type="submit">⏻ Sair</button>
+      </form>
+    </nav>
+  </header>
+  {% endif %}
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <div id="toasts" class="toasts" aria-live="polite" aria-atomic="false"></div>
+  {% if usuario %}{% include "_dialogs.html" %}{% endif %}
+  {% block scripts %}{% endblock %}
+</body>
+</html>

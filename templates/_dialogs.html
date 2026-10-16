@@ -1,0 +1,64 @@
+{% from "_campos.html" import campos with context %}
+{# Janelas compartilhadas pelas páginas: detalhes, edição e confirmação. #}
+<dialog id="dlg-detalhe" class="dlg dlg-lg" aria-labelledby="det-titulo">
+  <div class="dlg-head">
+    <h3 id="det-titulo">Detalhes do processo</h3>
+    <button class="icon-btn" type="button" data-fechar aria-label="Fechar">✕</button>
+  </div>
+  <div id="det-corpo" class="dlg-body"><p class="muted">Carregando…</p></div>
+</dialog>
+
+<dialog id="dlg-editar" class="dlg dlg-lg" aria-labelledby="ed-titulo">
+  <div class="dlg-head">
+    <h3 id="ed-titulo">✏️ Editar processo</h3>
+    <button class="icon-btn" type="button" data-fechar aria-label="Fechar">✕</button>
+  </div>
+  <form id="form-editar" class="dlg-body" novalidate>
+    {{ campos('ed', true) }}
+    <div class="dlg-actions">
+      <button class="btn btn-ghost" type="button" data-fechar>Cancelar</button>
+      <button class="btn btn-primary" type="submit">💾 Salvar alterações</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlg-confirmar" class="dlg" aria-labelledby="conf-titulo">
+  <div class="dlg-head">
+    <h3 id="conf-titulo">Confirmar</h3>
+    <button class="icon-btn" type="button" data-fechar aria-label="Fechar">✕</button>
+  </div>
+  <div class="dlg-body">
+    <p id="conf-msg"></p>
+    <div id="conf-digite" class="field" hidden>
+      <label for="conf-input" id="conf-label"></label>
+      <input id="conf-input" type="text" autocomplete="off">
+    </div>
+    <div class="dlg-actions">
+      <button class="btn btn-ghost" type="button" id="conf-cancelar">Cancelar</button>
+      <button class="btn btn-primary" type="button" id="conf-ok">Confirmar</button>
+    </div>
+  </div>
+</dialog>
+
+{% if usuario and usuario.role == 'admin' %}
+<dialog id="dlg-config" class="dlg" aria-labelledby="cfg-titulo">
+  <div class="dlg-head">
+    <h3 id="cfg-titulo">⚙️ Prazos dos alertas</h3>
+    <button class="icon-btn" type="button" data-fechar aria-label="Fechar">✕</button>
+  </div>
+  <form id="form-config" class="dlg-body" novalidate>
+    <div class="field"><label for="cfg-dias_atencao">Atenção: sem atualização há (dias)</label>
+      <input id="cfg-dias_atencao" name="dias_atencao" type="number" min="1" max="365"><small class="erro" data-erro="dias_atencao"></small></div>
+    <div class="field"><label for="cfg-dias_alerta">Alerta: sem atualização há (dias)</label>
+      <input id="cfg-dias_alerta" name="dias_alerta" type="number" min="1" max="365"><small class="erro" data-erro="dias_alerta"></small></div>
+    <div class="field"><label for="cfg-dias_prioridade_alta">Prioridade alta: atrasado há (dias)</label>
+      <input id="cfg-dias_prioridade_alta" name="dias_prioridade_alta" type="number" min="1" max="365"><small class="erro" data-erro="dias_prioridade_alta"></small></div>
+    <div class="field"><label for="cfg-prazo_padrao_dias">Prazo de resolução sugerido no cadastro (dias)</label>
+      <input id="cfg-prazo_padrao_dias" name="prazo_padrao_dias" type="number" min="1" max="365"><small class="erro" data-erro="prazo_padrao_dias"></small></div>
+    <div class="dlg-actions">
+      <button class="btn btn-ghost" type="button" data-fechar>Cancelar</button>
+      <button class="btn btn-primary" type="submit">💾 Salvar</button>
+    </div>
+  </form>
+</dialog>
+{% endif %}

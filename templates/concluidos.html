@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Processos concluídos{% endblock %}
+{% block content %}
+<section class="hero hero-sm">
+  <a class="btn btn-ghost btn-sm" href="{{ url_for('index') }}">← Voltar à página inicial</a>
+  <h1 class="page-title">✅ Processos concluídos</h1>
+  <p class="muted">Histórico arquivado. Os registros ficam guardados e podem ser consultados ou reabertos.</p>
+</section>
+
+<section class="card">
+  <div class="toolbar">
+    <div class="search">
+      <span class="search-icon" aria-hidden="true">🔍</span>
+      <input id="busca" type="search" placeholder="Buscar por nome, CPF ou protocolo" aria-label="Buscar processos concluídos" autocomplete="off" maxlength="100">
+    </div>
+    <select id="filtro-tipo" aria-label="Filtrar por tipo">
+      <option value="">Todos os tipos</option>
+      {% for k, t in TIPOS.items() %}<option value="{{ k }}">{{ t.label }}</option>{% endfor %}
+    </select>
+  </div>
+  <div id="lista"></div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/common.js') }}"></script>
+<script src="{{ url_for('static', filename='js/concluidos.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Entrar{% endblock %}
+{% block content %}
+<section class="login-wrap">
+  <div class="card login-card">
+    <div class="login-logo">🩺</div>
+    <h1 class="login-title">bora trabalhar!!</h1>
+    <p class="muted center">Acesso restrito a usuários autorizados.</p>
+
+    {% if erro %}<div class="banner banner-erro" role="alert">{{ erro }}</div>{% endif %}
+
+    <form method="post" action="{{ url_for('login') }}" autocomplete="off">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="field">
+        <label for="username">Usuário</label>
+        <input id="username" name="username" type="text" value="{{ username or '' }}" required autofocus maxlength="80" autocomplete="username">
+      </div>
+      <div class="field">
+        <label for="password">Senha</label>
+        <input id="password" name="password" type="password" required maxlength="200" autocomplete="current-password">
+      </div>
+      <button class="btn btn-primary btn-block" type="submit">🔐 Entrar</button>
+    </form>
+    <p class="muted small center">Seus acessos são registrados para fins de segurança (LGPD).</p>
+  </div>
+</section>
+{% endblock %}

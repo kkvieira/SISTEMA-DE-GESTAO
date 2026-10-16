@@ -1,0 +1,77 @@
+{# Campos do formulário de processo, reutilizados no cadastro e na edição. #}
+{% macro campos(p, edicao=false) %}
+<div class="field">
+  <label for="{{ p }}-cliente_nome">Nome completo do cliente <b class="req">*</b></label>
+  <input id="{{ p }}-cliente_nome" name="cliente_nome" type="text" maxlength="120" autocomplete="off" placeholder="Ex.: Maria da Silva">
+  <small class="erro" data-erro="cliente_nome"></small>
+</div>
+
+<div class="row2">
+  <div class="field">
+    <label for="{{ p }}-cpf">CPF</label>
+    <input id="{{ p }}-cpf" name="cpf" type="text" inputmode="numeric" maxlength="14" autocomplete="off" placeholder="000.000.000-00" data-mask="cpf">
+    <small class="erro" data-erro="cpf"></small>
+  </div>
+  <div class="field">
+    <label for="{{ p }}-cnpj">CNPJ</label>
+    <input id="{{ p }}-cnpj" name="cnpj" type="text" inputmode="numeric" maxlength="18" autocomplete="off" placeholder="00.000.000/0000-00" data-mask="cnpj">
+    <small class="erro" data-erro="cnpj"></small>
+  </div>
+</div>
+<small class="hint">Informe ao menos um: CPF ou CNPJ.</small>
+
+<div class="field">
+  <label for="{{ p }}-plano">Nome do plano de saúde <b class="req">*</b></label>
+  <input id="{{ p }}-plano" name="plano" type="text" maxlength="100" autocomplete="off">
+  <small class="erro" data-erro="plano"></small>
+</div>
+
+<div class="row2">
+  <div class="field">
+    <label for="{{ p }}-login_cliente">Login do cliente</label>
+    <input id="{{ p }}-login_cliente" name="login_cliente" type="text" maxlength="100" autocomplete="off">
+    <small class="erro" data-erro="login_cliente"></small>
+  </div>
+  <div class="field">
+    <label for="{{ p }}-senha_cliente">Senha do cliente</label>
+    <input id="{{ p }}-senha_cliente" name="senha_cliente" type="password" maxlength="200" autocomplete="new-password"
+           placeholder="{{ 'Em branco = manter a atual' if edicao else 'Opcional' }}">
+    <small class="erro" data-erro="senha_cliente"></small>
+  </div>
+</div>
+<small class="hint">🔒 Login e senha são opcionais; a senha é guardada criptografada e só é visível a pessoal autorizado.</small>
+{% if edicao %}
+<label class="check"><input type="checkbox" name="remover_senha"> Remover a senha armazenada deste processo</label>
+{% endif %}
+
+<div class="row2">
+  <div class="field">
+    <label for="{{ p }}-protocolo">Número do protocolo <b class="req">*</b></label>
+    <input id="{{ p }}-protocolo" name="protocolo" type="text" maxlength="40" autocomplete="off">
+    <small class="erro" data-erro="protocolo"></small>
+  </div>
+  <div class="field">
+    <label for="{{ p }}-tipo">Tipo de processo <b class="req">*</b></label>
+    <select id="{{ p }}-tipo" name="tipo">
+      <option value="">Selecione…</option>
+      {% for k, t in TIPOS.items() %}<option value="{{ k }}">{{ t.label }}</option>{% endfor %}
+    </select>
+    <small class="erro" data-erro="tipo"></small>
+  </div>
+</div>
+
+<div class="row2">
+  <div class="field">
+    <label for="{{ p }}-status">Status do processo <b class="req">*</b></label>
+    <select id="{{ p }}-status" name="status">
+      {% for k, label in STATUS.items() %}<option value="{{ k }}">{{ label }}</option>{% endfor %}
+    </select>
+    <small class="erro" data-erro="status"></small>
+  </div>
+  <div class="field">
+    <label for="{{ p }}-prazo_resolucao">Prazo de resolução</label>
+    <input id="{{ p }}-prazo_resolucao" name="prazo_resolucao" type="date">
+    <small class="erro" data-erro="prazo_resolucao"></small>
+  </div>
+</div>
+{% endmacro %}

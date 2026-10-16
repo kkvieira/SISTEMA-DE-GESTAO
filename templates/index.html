@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% from "_campos.html" import campos with context %}
+{% block content %}
+<section class="hero">
+  <h1 class="hero-title">bora trabalhar!!</h1>
+  <p class="muted">Olá, {{ usuario.username }}! Cadastre, acompanhe e conclua as tratativas dos clientes.</p>
+</section>
+
+<section class="summary" aria-label="Resumo">
+  <div class="stat"><span class="stat-icon">📋</span><div><strong id="st-ativos">–</strong><span>Processos ativos</span></div></div>
+  <div class="stat stat-blue"><span class="stat-icon">🔄</span><div><strong id="st-andamento">–</strong><span>Em andamento</span></div></div>
+  <div class="stat stat-red"><span class="stat-icon">⏰</span><div><strong id="st-atrasados">–</strong><span>Atrasados</span></div></div>
+</section>
+
+<section class="card alerts" id="alertas" aria-live="polite">
+  <div class="card-head">
+    <h2>🔔 Lembretes</h2>
+    {% if usuario.role == 'admin' %}<button class="btn btn-ghost btn-sm" id="btn-config" type="button">⚙️ Prazos</button>{% endif %}
+  </div>
+  <div id="alertas-corpo"><p class="muted">Verificando processos…</p></div>
+</section>
+
+<div class="layout">
+  <section class="card form-card" aria-labelledby="t-novo">
+    <div class="card-head"><h2 id="t-novo">➕ Novo processo</h2></div>
+    <form id="form-novo" novalidate>
+      {{ campos('novo') }}
+      <button class="btn btn-primary btn-block" type="submit" id="btn-adicionar">➕ Adicionar processo</button>
+    </form>
+  </section>
+
+  <section class="card panel" aria-labelledby="t-pastas">
+    <div class="card-head"><h2 id="t-pastas">📂 Pastas de processos</h2><span class="muted" id="total-txt"></span></div>
+
+    <div class="toolbar">
+      <div class="search">
+        <span class="search-icon" aria-hidden="true">🔍</span>
+        <input id="busca" type="search" placeholder="Buscar por nome, CPF ou protocolo" aria-label="Buscar processos" autocomplete="off" maxlength="100">
+      </div>
+      <select id="filtro-tipo" aria-label="Filtrar por tipo">
+        <option value="">Todos os tipos</option>
+        {% for k, t in TIPOS.items() %}<option value="{{ k }}">{{ t.label }}</option>{% endfor %}
+      </select>
+      <select id="filtro-status" aria-label="Filtrar por status">
+        <option value="">Todos os status</option>
+        <option value="andamento">Andamento</option>
+        <option value="atrasado">Atrasado</option>
+      </select>
+    </div>
+
+    <div id="pastas" class="folders">
+      {% for k, t in TIPOS.items() %}
+      <button type="button" class="folder" data-tipo="{{ k }}">
+        <span class="folder-icon">{{ t.icone }}</span>
+        <span class="folder-name">{{ t.label }}</span>
+        <span class="folder-count"><b data-count="{{ k }}">0</b> <small>processos</small></span>
+      </button>
+      {% endfor %}
+    </div>
+
+    <div id="lista-area" hidden>
+      <div class="list-head">
+        <button class="btn btn-ghost btn-sm" type="button" id="btn-voltar">← Voltar às pastas</button>
+        <h3 id="lista-titulo"></h3>
+      </div>
+      <div id="lista"></div>
+    </div>
+  </section>
+</div>
+
+<a class="card link-card" href="{{ url_for('concluidos') }}">
+  <span class="folder-icon">✅</span>
+  <div><strong>Processos concluídos</strong><span class="muted">Consulte o histórico de processos arquivados · <b id="st-concluidos">0</b> registro(s)</span></div>
+  <span class="chev">→</span>
+</a>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/common.js') }}"></script>
+<script src="{{ url_for('static', filename='js/home.js') }}"></script>
+{% endblock %}
