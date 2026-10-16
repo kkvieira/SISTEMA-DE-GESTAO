@@ -304,7 +304,7 @@ class ProcessosTest(BaseTest):
         self.assertEqual(len(c2.get("/api/processos").get_json()), 1)
 
     def test_paginas(self):
-        self.assertIn("bora trabalhar!!", self.c.get("/").get_data(as_text=True))
+        self.assertIn("Sala de arquivos", self.c.get("/").get_data(as_text=True))
         self.assertEqual(self.c.get("/concluidos").status_code, 200)
 
 

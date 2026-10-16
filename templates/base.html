@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta name="robots" content="noindex, nofollow">
-  <title>{% block title %}bora trabalhar!!{% endblock %} · Gestão de Tratativas</title>
+  <title>{% block title %}Sala de arquivos{% endblock %} · Gestão de Tratativas</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body data-app='{{ {"tipos": TIPOS, "status": STATUS, "admin": usuario.role == "admin" if usuario else false} | tojson }}'>

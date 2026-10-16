@@ -1,4 +1,4 @@
-# 🩺 Gestão de Tratativas de Clientes — "bora trabalhar!!"
+# 🩺 Gestão de Tratativas de Clientes — "Sala de arquivos"
 
 Sistema web (Flask + SQLite + HTML/CSS/JS) para controlar processos de clientes de planos de saúde, com
 tema escuro, alertas automáticos de processos parados/atrasados e arquivamento de concluídos.
