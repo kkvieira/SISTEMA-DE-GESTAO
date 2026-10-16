@@ -22,13 +22,17 @@ def _segredo_persistente(env_name: str, filename: str, gerador) -> str:
     valor = os.environ.get(env_name, "").strip()
     if valor:
         return valor
-    INSTANCE_DIR.mkdir(exist_ok=True)
-    caminho = INSTANCE_DIR / filename
-    if caminho.exists():
-        return caminho.read_text(encoding="utf-8").strip()
-    valor = gerador()
-    caminho.write_text(valor, encoding="utf-8")
-    return valor
+    try:
+        INSTANCE_DIR.mkdir(exist_ok=True)
+        caminho = INSTANCE_DIR / filename
+        if caminho.exists():
+            return caminho.read_text(encoding="utf-8").strip()
+        valor = gerador()
+        caminho.write_text(valor, encoding="utf-8")
+        return valor
+    except OSError:
+        # Em ambientes serverless (Vercel) com sistema de arquivos somente-leitura
+        return gerador()
 
 
 def _bool(nome: str, padrao: bool = False) -> bool:

@@ -167,6 +167,18 @@ def normalizar(texto) -> str:
     return "".join(c for c in texto if not unicodedata.combining(c)).lower()
 
 
+class CursorWrapper:
+    def __init__(self, cursor, lastrowid=None):
+        self._cursor = cursor
+        self.lastrowid = lastrowid
+
+    def __iter__(self):
+        return iter(self._cursor)
+
+    def __getattr__(self, name):
+        return getattr(self._cursor, name)
+
+
 class DBWrapper:
     """Wrapper uniforme para SQLite e PostgreSQL mantendo a mesma interface de execução."""
 
@@ -177,30 +189,37 @@ class DBWrapper:
     def _convert_sql(self, sql: str) -> str:
         if not self.is_pg:
             return sql
-        # Converte placeholders '?' para '%s' do psycopg2
         sql = sql.replace("?", "%s")
-        # Substitui a função norm(...) por unaccent(lower(...)) se disponível, ou lower(...)
         sql = re.sub(r'\bnorm\((.*?)\)', r'lower(\1)', sql)
         return sql
 
     def execute(self, sql: str, params=()):
         sql_conv = self._convert_sql(sql)
         cursor = self.conn.cursor()
-        
-        # Em PostgreSQL, se for um INSERT, anexa RETURNING id para emular lastrowid
-        is_insert = self.is_pg and sql_conv.strip().upper().startswith("INSERT INTO") and "RETURNING" not in sql_conv.upper()
-        if is_insert:
+
+        norm_sql = sql_conv.strip().upper()
+        needs_returning = (
+            self.is_pg
+            and norm_sql.startswith("INSERT INTO")
+            and "RETURNING" not in norm_sql
+            and not norm_sql.startswith("INSERT INTO CONFIGURACOES")
+        )
+        if needs_returning:
             sql_conv = sql_conv.rstrip("; \t\n") + " RETURNING id"
 
         cursor.execute(sql_conv, tuple(params))
-        
-        if is_insert:
+
+        lastrowid = None
+        if needs_returning:
             try:
                 row = cursor.fetchone()
                 if row:
-                    cursor.lastrowid = row[0]
+                    lastrowid = row[0]
             except Exception:
-                cursor.lastrowid = None
+                lastrowid = None
+
+        if self.is_pg:
+            return CursorWrapper(cursor, lastrowid=lastrowid)
         return cursor
 
     def executescript(self, script: str):
